@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
-using Services.Models;
+using Services.Models.UserClass;
 using Shared.Constants;
 using Shared.Exceptions;
 using Shared.Interfaces.Models;
@@ -78,5 +78,6 @@ namespace Services
                 errors.Add("Greska, email vec postoji");
             }
         }
+
     }
 }

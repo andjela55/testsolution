@@ -16,7 +16,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<string>> LoginAsync(LoginDto loginData)
+        public async Task<ActionResult<string>> LoginUser(LoginDto loginData)
         {
             var token = await _service.LoginUser(loginData);
             return Ok(token);

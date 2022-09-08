@@ -1,19 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
-using SharedRepository;
+﻿using SharedRepository;
 using SharedServices.Interfaces;
+using System.Net;
 using System.Net.Mail;
 
 namespace Services.HelperServices
 {
     public class EmailHelperService : IEmailHelperService
     {
-        private IConfiguration _config;
         private IUserRepository _userRepository;
 
-        public EmailHelperService(IConfiguration config,
+        public EmailHelperService(
                             IUserRepository userRepository)
         {
-            _config = config;
             _userRepository = userRepository;
         }
         public async Task<bool> ConfirmEmail(long id, string token)
@@ -32,22 +30,23 @@ namespace Services.HelperServices
         }
         public bool SendEmail(string userEmail, string confirmationLink)
         {
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress("care@yogihosting.com");
-            mailMessage.To.Add(new MailAddress(userEmail));
-
-            mailMessage.Subject = "Confirm your email";
-            mailMessage.IsBodyHtml = true;
-            mailMessage.Body = confirmationLink;
-
-            SmtpClient client = new SmtpClient();
-            client.Credentials = new System.Net.NetworkCredential("", "");
-            client.Host = "smtpout.secureserver.net";
-            client.Port = 80;
-
             try
             {
-                client.Send(mailMessage);
+                using (MailMessage mail = new MailMessage())
+                {
+                    mail.From = new MailAddress("testandjela55@gmail.com");
+                    mail.To.Add("andjelafilipovic1416@gmail.com");
+                    mail.Subject = "Test Mail";
+                    mail.Body = $"<h1>Please confirm you registration</h1>\n<a href=\"{confirmationLink}\">click here!</a>";
+                    mail.IsBodyHtml = true;
+
+                    using (SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtp.Credentials = new NetworkCredential("testandjela55@gmail.com", "tuvbeqwtzjatvojd");
+                        smtp.EnableSsl = true;
+                        smtp.Send(mail);
+                    }
+                }
                 return true;
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
-﻿using Shared.Interfaces.Models;
+﻿using Services.Models.UserTokenClass;
+using Shared.Interfaces.Models;
 
-namespace Services.Models
+namespace Services.Models.UserClass
 {
     public class User : IUser
     {

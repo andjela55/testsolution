@@ -32,12 +32,12 @@ namespace Repository
             var users = await _context.Users.ToListAsync<IUser>();
             return users;
         }
-        public async Task<bool> Insert(IUser user)
+        public async Task<IUser> Insert(IUser user)
         {
             var userForInsert = _mapper.Map<User>(user);
             await _context.Users.AddAsync(userForInsert);
             await _context.SaveChangesAsync();
-            return true;
+            return userForInsert;
         }
         public async Task<IUser> GetByEmail(string email)
         {

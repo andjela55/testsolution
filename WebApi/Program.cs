@@ -66,11 +66,6 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-IConfiguration config = new ConfigurationBuilder()
-.AddJsonFile("appsettings.json")
-.AddEnvironmentVariables()
-.Build();
-
 
 //builder.Services.Configure<IdentityOptions>(opts =>
 //{
@@ -98,10 +93,16 @@ builder.Services.AddScoped<IUrlHelper>(factory =>
                                    .ActionContext;
     return new UrlHelper(actionContext);
 });
-var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
+
+
+IConfiguration config = new ConfigurationBuilder()
+.AddJsonFile("appsettings.json")
+.AddEnvironmentVariables()
+.Build();
+var connectionString = config.GetSection("ConnectionString").Value;
 
 builder.Services.StartDto();
-builder.Services.SetRepository(connectionString);
+builder.Services.SetRepository(connectionString, config);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();

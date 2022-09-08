@@ -8,9 +8,9 @@ namespace Model.UserClass
         public UserAutoMapper()
         {
             CreateMap<IUser, User>();
-            CreateMap<IUserInsert, User>()
-            .ForMember(dest => dest.UserRoles,
-                       opts => opts.MapFrom(src => src.Roles.Select(x => new UserRole() { RoleId = x })));
+            CreateMap<IUserInsert, User>();
+            //.ForMember(dest => dest.UserRoles,
+            //           opts => opts.MapFrom(src => src.Roles.Select(x => new UserRole() { RoleId = x })));
         }
 
     }

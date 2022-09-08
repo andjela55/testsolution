@@ -40,8 +40,7 @@ namespace Model.ContextFolder
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Role>().ToTable("Role");
-            modelBuilder.Entity<User>().ToTable("User");
+            //modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.HasKey(x => new { x.UserId, x.RoleId });
@@ -53,7 +52,6 @@ namespace Model.ContextFolder
                     .WithMany(x => x.UserRoles)
                     .HasForeignKey(x => x.RoleId);
             });
-            modelBuilder.Entity<Permission>().ToTable("Permission");
             modelBuilder.Entity<RolePermission>(entity =>
             {
                 entity.HasKey(x => new { x.RoleId, x.PermissionId });

@@ -1,4 +1,6 @@
-﻿using Model.UserClass;
+﻿
+
+using Model.UserClass;
 using Shared.Enums;
 using Shared.Interfaces.Models;
 using System.ComponentModel.DataAnnotations;

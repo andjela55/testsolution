@@ -21,5 +21,13 @@ namespace WebApi.Controllers
             await _service.RegisterUser(userData);
             return Ok();
         }
+        [HttpPost]
+        [Route("confirm/{id}/{token}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> ConfirmRegistration(long id, string token)
+        {
+            await _service.ConfirmRegistration(id, token);
+            return Ok();
+        }
     }
 }

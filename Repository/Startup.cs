@@ -11,7 +11,7 @@ namespace Repository
         {
             services.AddDbContext<Context>((options) =>
             {
-                options.UseSqlServer(connectionString);
+                options.UseNpgsql(connectionString);
             });
         }
     }

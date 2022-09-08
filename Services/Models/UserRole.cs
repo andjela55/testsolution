@@ -1,4 +1,5 @@
-﻿using Shared.Interfaces.Models;
+﻿using Services.Models.UserClass;
+using Shared.Interfaces.Models;
 
 namespace Services.Models
 {

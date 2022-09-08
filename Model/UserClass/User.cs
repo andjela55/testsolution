@@ -31,6 +31,8 @@ namespace Model.UserClass
 
         public virtual ICollection<UserToken> UserTokens { get; set; }
 
+        public List<long> Roles => throw new NotImplementedException();
+
         [NotMapped]
         ICollection<IUserRole> IUserExtended.UserRoles => UserRoles?.ToList<IUserRole>();
     }

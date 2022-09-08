@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Services.Models;
+using Services.Models.UserClass;
 using Shared.Exceptions;
 using Shared.Interfaces.Models;
 using SharedRepository;
@@ -45,6 +45,10 @@ namespace Services
             if (user == null)
             {
                 return "";
+            }
+            if (!user.AccountConfirmed)
+            {
+                throw new Exception("Your registration is not confirmed.");
             }
             var token = await GenerateJSONWebToken(user.Id);
             if (token == null)

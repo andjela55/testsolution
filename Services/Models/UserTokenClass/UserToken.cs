@@ -1,7 +1,7 @@
 ﻿using Shared.Enums;
 using Shared.Interfaces.Models;
 
-namespace Services.Models
+namespace Services.Models.UserTokenClass
 {
     public class UserToken : IUserToken
     {

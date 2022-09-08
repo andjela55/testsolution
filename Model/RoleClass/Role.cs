@@ -2,12 +2,9 @@
 using Shared.Interfaces.Models;
 using Shared.Interfaces.ModelsExtended;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model.RoleClass
 {
-
-    [Table("Role")]
     public class Role : IRole, IRoleExtended
     {
         [Key]

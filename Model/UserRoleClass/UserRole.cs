@@ -2,11 +2,9 @@
 using Model.UserClass;
 using Shared.Interfaces.Models;
 using Shared.Interfaces.ModelsExtended;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
-    [Table("UserRole")]
     public class UserRole : IUserRole, IUserRoleExtended
     {
         public long UserId { get; set; }
