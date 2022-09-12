@@ -2,7 +2,7 @@
 
 namespace Shared.Interfaces.ModelsExtended
 {
-    public interface IUserRoleExtended
+    public interface IUserRoleExtended : IUserRole
     {
         public IUser User { get; }
         public IRole Role { get; }

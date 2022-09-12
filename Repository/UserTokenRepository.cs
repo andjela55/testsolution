@@ -41,5 +41,17 @@ namespace Repository
             return true;
 
         }
+
+        public async Task<bool> DeleteExpiredTokens()
+        {
+            var tokensForRemoving = _context.UserTokens.Where(x => x.ExpirationDate.AddDays(3) < DateTime.UtcNow);
+            if (!tokensForRemoving.Any())
+            {
+                return true;
+            }
+            _context.UserTokens.RemoveRange(tokensForRemoving);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

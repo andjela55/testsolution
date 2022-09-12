@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model.UserClass
 {
     [Table("User")]
-    public class User : IUser, IUserExtended
+    public class User : IUserExtended
     {
         [Required]
         [Key]
@@ -27,11 +27,9 @@ namespace Model.UserClass
 
         public bool AccountConfirmed { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public ICollection<UserRole> UserRoles { get; set; }
 
-        public virtual ICollection<UserToken> UserTokens { get; set; }
-
-        public List<long> Roles => throw new NotImplementedException();
+        public ICollection<UserToken> UserTokens { get; set; }
 
         [NotMapped]
         ICollection<IUserRole> IUserExtended.UserRoles => UserRoles?.ToList<IUserRole>();

@@ -106,7 +106,7 @@ namespace Services
             {
                 var salt = _hashService.GenerateSalt();
                 var userDb = await _userRepository.GetByEmail(data.Email);
-                var user = _mapper.Map<User>(userDb);
+                var user = _mapper.Map<ServicesUser>(userDb);
                 user.Password = _hashService.HashPassword(data.Password, salt, 20, 20);
                 user.Salt = salt;
                 await _userRepository.Update(userDb.Id, user);

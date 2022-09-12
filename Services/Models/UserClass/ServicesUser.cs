@@ -3,7 +3,7 @@ using Shared.Interfaces.Models;
 
 namespace Services.Models.UserClass
 {
-    public class User : IUser
+    public class ServicesUser : IUser
     {
         public long Id { get; set; }
 
@@ -15,9 +15,9 @@ namespace Services.Models.UserClass
 
         public bool AccountConfirmed { get; set; }
 
-        public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<ServicesUserRole> UserRoles { get; set; }
 
-        public virtual ICollection<UserToken> UserTokens { get; set; }
+        public virtual ICollection<ServicesUserToken> UserTokens { get; set; }
 
     }
 }

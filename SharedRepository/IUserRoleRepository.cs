@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedRepository
+﻿namespace SharedRepository
 {
     public interface IUserRoleRepository
     {
         Task<List<long>> GetUserRolesIdsByUserId(long userId);
+        Task<bool> AddRolesForUser(long userId, IEnumerable<long> roles);
     }
 }

@@ -3,6 +3,7 @@ using Model.PermissionClass;
 using Model.RoleClass;
 using Model.RolePermissionClass;
 using Model.UserClass;
+using Model.UserRoleClass;
 using Model.UserTokenClass;
 
 namespace Model.ContextFolder
@@ -40,29 +41,8 @@ namespace Model.ContextFolder
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.HasKey(x => new { x.UserId, x.RoleId });
-                entity.HasOne(x => x.User)
-                   .WithMany(x => x.UserRoles)
-                   .HasForeignKey(x => x.UserId);
-
-                entity.HasOne(x => x.Role)
-                    .WithMany(x => x.UserRoles)
-                    .HasForeignKey(x => x.RoleId);
-            });
-            modelBuilder.Entity<RolePermission>(entity =>
-            {
-                entity.HasKey(x => new { x.RoleId, x.PermissionId });
-                entity.HasOne(x => x.Role)
-                   .WithMany(x => x.RolePermission)
-                   .HasForeignKey(x => x.RoleId);
-
-                entity.HasOne(x => x.Permission)
-                      .WithMany(x => x.RolePermissions)
-                      .HasForeignKey(x => x.PermissionId);
-            });
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
             SeedData(modelBuilder);
         }
 

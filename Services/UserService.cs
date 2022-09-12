@@ -56,7 +56,7 @@ namespace Services
         {
             List<string> errors = new List<string>();
 
-            var userForInsert = _mapper.Map<User>(user);
+            var userForInsert = _mapper.Map<ServicesUser>(user);
             await ValidateInsert(userForInsert, errors);
 
             if (errors.Count > 0)

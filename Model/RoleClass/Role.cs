@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Model.RoleClass
 {
-    public class Role : IRole, IRoleExtended
+    public class Role : IRoleExtended
     {
         [Key]
         public long Id { get; set; }

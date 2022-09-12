@@ -3,7 +3,7 @@ using Shared.Interfaces.Models;
 
 namespace Services.Models.UserTokenClass
 {
-    public class UserToken : IUserToken
+    public class ServicesUserToken : IUserToken
     {
         public long Id { get; set; }
 

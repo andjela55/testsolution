@@ -8,10 +8,19 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Services;
 using Services.HelperServices;
+using Services.Models;
 using SharedServices;
 using SharedServices.Interfaces;
 using System.Text;
-using WebApi.Middleware;
+
+//var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+//{
+//    Args = args,
+//    ApplicationName = typeof(Program).Assembly.FullName,
+//    ContentRootPath = Directory.GetCurrentDirectory(),
+//    EnvironmentName = Environments.Staging,
+//    WebRootPath = "webroot"
+//});
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,13 +75,7 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 
-
-//builder.Services.Configure<IdentityOptions>(opts =>
-//{
-//    opts.User.RequireUniqueEmail = true;
-//    opts.SignIn.RequireConfirmedEmail = true;
-//});
-
+builder.Services.AddHostedService<HostedService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddScoped<ILoginService, LoginService>();
@@ -106,15 +109,14 @@ builder.Services.SetRepository(connectionString, config);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
-
-app.ConfigureExceptionHandler(app.Logger);
+app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test.API v1"));
+//}
 
 app.UseHttpsRedirection();
 
@@ -127,5 +129,4 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model.PermissionClass
 {
     [Table("Permission")]
-    public class Permission : IPermission, IPermissionExtended
+    public class Permission : BaseEntity, IPermissionExtended
     {
         [Key]
         public long Id { get; set; }

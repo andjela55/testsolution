@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Model;
 using Model.ContextFolder;
 using SharedRepository;
@@ -8,10 +9,22 @@ namespace Repository
     public class UserRoleRepository : IUserRoleRepository
     {
         private Context _context;
-
-        public UserRoleRepository(Context context)
+        private readonly IMapper _mapper;
+        public UserRoleRepository(Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
+        }
+
+        public async Task<bool> AddRolesForUser(long userId, IEnumerable<long> roles)
+        {
+            foreach (var ur in roles)
+            {
+                var userRole = new UserRole { UserId = userId, RoleId = ur };
+                _context.UserRoles.Add(userRole);
+            }
+            await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<List<long>> GetUserRolesIdsByUserId(long userId)
@@ -21,9 +34,7 @@ namespace Repository
         }
         public async Task<bool> Insert(long userId, long roleId)
         {
-            var userRole = new UserRole();
-            userRole.UserId = userId;
-            userRole.RoleId = roleId;
+            var userRole = new UserRole { UserId = userId, RoleId = roleId };
             _context.UserRoles.Add(userRole);
             await _context.SaveChangesAsync();
             return true;

@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model.RolePermissionClass
 {
     [Table("RolePermission")]
-    public class RolePermission : IRolePermission, IRolePermissionExtended
+    public class RolePermission : IRolePermissionExtended
     {
         public long RoleId { get; set; }
         public long PermissionId { get; set; }
