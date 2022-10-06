@@ -1,9 +1,4 @@
 ﻿using Shared.Interfaces.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharedServices.Interfaces
 {
@@ -13,5 +8,6 @@ namespace SharedServices.Interfaces
         Task<List<IUser>> GetAll();
         Task<bool> Insert(IUserInsert user);
         Task<IUser> GetById(long id);
+        Task<bool> Update(IUser user);
     }
 }

@@ -7,11 +7,11 @@ using SharedRepository;
 
 namespace Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : BaseRepository<User, IUser>, IUserRepository
     {
         private Context _context;
         private readonly IMapper _mapper;
-        public UserRepository(Context context, IMapper mapper)
+        public UserRepository(Context context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -27,32 +27,32 @@ namespace Repository
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
             return user;
         }
-        public async Task<List<IUser>> GetAll()
+        public async Task<List<IUser>> GetAllUsers()
         {
-            var users = await _context.Users.ToListAsync<IUser>();
-            return users;
+            var users = await GetEntities();
+            return users.ToList<IUser>();
         }
-        public async Task<IUser> Insert(IUser user)
+        public async Task<IUser> Create(IUser user)
         {
-            var userForInsert = _mapper.Map<User>(user);
-            await _context.Users.AddAsync(userForInsert);
-            await _context.SaveChangesAsync();
-            return userForInsert;
+            var insertedUser = await InsertEntity(user);
+            return insertedUser;
         }
         public async Task<IUser> GetByEmail(string email)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
             return user;
         }
-        public async Task<bool> Update(long idUser, IUser userForUpdate)
+        public async Task<bool> UpdateUser(IUser userForUpdate)
         {
-            var userFromDb = _context.Users.FirstOrDefault(x => x.Id == idUser);
-            if (userFromDb == null)
-            {
-                throw new DbUpdateException("No data to be updated.");
-            }
-            _context.Entry(userFromDb).CurrentValues.SetValues(userForUpdate);
-            await _context.SaveChangesAsync();
+            //var userFromDb = _context.Users.FirstOrDefault(x => x.Id == idUser);
+            //if (userFromDb == null)
+            //{
+            //    throw new DbUpdateException("No data to be updated.");
+            //}
+            //_context.Entry(userFromDb).CurrentValues.SetValues(userForUpdate);
+            //await _context.SaveChangesAsync();
+            //var updateValues = _mapper.Map<User>(userForUpdate);
+            await UpdateEntity(userForUpdate);
             return true;
         }
     }

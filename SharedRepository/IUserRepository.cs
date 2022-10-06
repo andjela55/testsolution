@@ -6,9 +6,9 @@ namespace SharedRepository
     {
         Task<IUser> AuthenticateUser(string email, string password);
         Task<IUser> GetById(long userId);
-        Task<List<IUser>> GetAll();
-        Task<IUser> Insert(IUser user);
+        Task<List<IUser>> GetAllUsers();
+        Task<IUser> Create(IUser user);
         Task<IUser> GetByEmail(string email);
-        Task<bool> Update(long idUser, IUser userForUpdate);
+        Task<bool> UpdateUser(IUser userForUpdate);
     }
 }

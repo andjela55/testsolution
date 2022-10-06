@@ -46,7 +46,7 @@ namespace Services
         }
         public async Task<List<IUser>> GetAll()
         {
-            return await _userRepository.GetAll();
+            return await _userRepository.GetAllUsers();
         }
         public async Task<IUser> GetById(long id)
         {
@@ -65,19 +65,24 @@ namespace Services
             }
             else
             {
-                await _userRepository.Insert(userForInsert);
+                await _userRepository.Create(userForInsert);
                 _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
             }
             return true;
         }
         private async Task ValidateInsert(IUser user, List<string> errors)
         {
-            var users = await _userRepository.GetAll();
+            var users = await _userRepository.GetAllUsers();
             if (users.Any(x => x.Email == user.Email))
             {
                 errors.Add("Greska, email vec postoji");
             }
         }
 
+        public async Task<bool> Update(IUser user)
+        {
+            await _userRepository.UpdateUser(user);
+            return true;
+        }
     }
 }

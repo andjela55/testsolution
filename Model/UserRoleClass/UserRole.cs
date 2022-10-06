@@ -3,10 +3,13 @@ using Model.UserClass;
 using Shared.Interfaces.Models;
 using Shared.Interfaces.ModelsExtended;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
-    public class UserRole : IUserRoleExtended
+
+    [Table("UserRole")]
+    public class UserRole : BaseEntity, IUserRoleExtended
     {
         [Required]
         public long UserId { get; set; }

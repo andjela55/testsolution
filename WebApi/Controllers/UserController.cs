@@ -66,5 +66,13 @@ namespace WebApp.Controllers
             var result = await _service.Insert(user);
             return Ok(result);
         }
+        [HttpPut]
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> Update([FromBody] UserDto user)
+        {
+            var result1 = await _service.GetById(user.Id);
+            var result = await _service.Update(user);
+            return Ok(result);
+        }
     }
 }

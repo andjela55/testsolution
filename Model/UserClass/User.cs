@@ -10,12 +10,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model.UserClass
 {
     [Table("User")]
-    public class User : IUserExtended
+    public class User : BaseEntity, IUserExtended
     {
-        [Required]
         [Key]
         public long Id { get; set; }
-
         [Required]
         public string Name { get; set; }
 

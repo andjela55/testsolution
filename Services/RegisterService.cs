@@ -50,7 +50,7 @@ namespace Services
             user.Salt = salt;
 
 
-            var insertedUser = await _userRepository.Insert(user);
+            var insertedUser = await _userRepository.Create(user);
 
             var userToken = new ServicesUserToken()
             {
@@ -59,7 +59,7 @@ namespace Services
                 ExpirationDate = DateTime.UtcNow.AddDays(1),
                 TokenType = Shared.Enums.TokenType.VerificationToken
             };
-            await _userTokenRepository.Insert(userToken);
+            await _userTokenRepository.Create(userToken);
             var pageLink = _configObject.PageLink + $"?id={insertedUser.Id}&token={userToken.Token}";
             await _userRoleRepository.AddRolesForUser(insertedUser.Id, userData.Roles);
             bool emailResponse = _emailService.SendEmail(user.Email, pageLink);
@@ -99,7 +99,7 @@ namespace Services
             var userForUpdate = _mapper.Map<ServicesUser>(userFromDb);
             userForUpdate.AccountConfirmed = true;
 
-            await _userRepository.Update(id, userForUpdate);
+            await _userRepository.UpdateUser(userForUpdate);
             scope.Complete();
             return true;
         }

@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model.UserTokenClass
 {
     [Table("UserToken")]
-    public class UserToken : IUserToken
+    public class UserToken : BaseEntity, IUserToken
     {
         [Key]
         public long Id { get; set; }

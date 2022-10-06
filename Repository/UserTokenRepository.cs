@@ -8,20 +8,21 @@ using SharedRepository;
 
 namespace Repository
 {
-    public class UserTokenRepository : IUserTokenRepository
+    public class UserTokenRepository : BaseRepository<UserToken, IUserToken>, IUserTokenRepository
     {
         private Context _context;
         private readonly IMapper _mapper;
-        public UserTokenRepository(Context context, IMapper mapper)
+        public UserTokenRepository(Context context, IMapper mapper) : base(context, mapper)
         {
             _context = context;
             _mapper = mapper;
         }
-        public async Task<bool> Insert(IUserToken userToken)
+        public async Task<bool> Create(IUserToken userToken)
         {
-            var userTokenForInsert = _mapper.Map<UserToken>(userToken);
-            await _context.UserTokens.AddAsync(userTokenForInsert);
-            await _context.SaveChangesAsync();
+            //var userTokenForInsert = _mapper.Map<UserToken>(userToken);
+            //await _context.UserTokens.AddAsync(userTokenForInsert);
+            //await _context.SaveChangesAsync();
+            await InsertEntity(userToken);
             return true;
         }
         public async Task<IUserToken> GetRegistrationTokenForUser(long id)
