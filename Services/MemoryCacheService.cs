@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Caching.Memory;
+using SharedServices.Interfaces;
 using System.Net;
 
 namespace Services
@@ -9,7 +10,7 @@ namespace Services
 
 
 
-    public class MemoryCacheService
+    public class MemoryCacheService : IMemoryCacheService
     {
         public IMemoryCache _memoryCache;
         private Dictionary<string, string> pathMap = new Dictionary<string, string>();
@@ -17,6 +18,7 @@ namespace Services
         public MemoryCacheService(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
+
         }
 
         public void SaveHttpResponse(string constant, ActionExecutedContext context, bool checkForId)
@@ -25,9 +27,9 @@ namespace Services
             {
                 return;
             }
-            var path = context.HttpContext.Request.Path.ToString();
+            //var path = context.HttpContext.Request.Path.ToString();
             var result = context.Result;
-            _memoryCache.Set(path, result);
+            //_memoryCache.Set(path, result);
 
             if (checkForId)
             {
@@ -35,14 +37,21 @@ namespace Services
                 constant = String.Format(constant, id);
 
             }
-            pathMap[constant] = path;
+            //pathMap[constant] = path;
+            _memoryCache.Set(constant, result);
 
         }
-        public void GetResponseFromCache(ActionExecutingContext context)
+        public void GetResponseFromCache(ActionExecutingContext context,string constant,bool checkForId)
         {
-            var requestPath = context.HttpContext.Request.Path.ToString();
+            //var requestPath = context.HttpContext.Request.Path.ToString();
+            if (checkForId)
+            {
+                var id = RoutingHttpContextExtensions.GetRouteValue(context.HttpContext, "id");
+                constant = String.Format(constant, id);
 
-            if (!_memoryCache.TryGetValue(requestPath, out ObjectResult responseFromCache))
+            }
+
+            if (!_memoryCache.TryGetValue(constant, out ObjectResult responseFromCache))
             {
                 return;
             }
@@ -50,13 +59,14 @@ namespace Services
             return;
         }
 
-        public void RemoveItem(string key, string id = "")
+        public void RemoveItem(string constant, string id = "")
         {
             if (string.IsNullOrEmpty(id))
             {
-                key = string.Format(key, id);
+                constant = string.Format(constant, id);
             }
-            _memoryCache.Remove(key);
+            //var path = pathMap[key];
+            _memoryCache.Remove(constant);
         }
 
     }

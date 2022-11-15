@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Model.UserClass;
 using Services.Models.UserClass;
 using Shared.Constants;
 using Shared.Exceptions;
@@ -13,7 +14,7 @@ namespace Services
     public class UserService : IUserService
     {
         private IHttpContextAccessor _httpContextAccessor;
-        private MemoryCacheService _memoryCacheService;
+        private IMemoryCacheService _memoryCacheService;
         private IUserRepository _userRepository;
         private readonly IMapper _mapper;
         public UserService(
@@ -21,7 +22,7 @@ namespace Services
                            IUserRepository userRepository,
                            IUserRoleRepository userRoleRepository,
                            IRoleRepository roleRepository,
-                           MemoryCacheService memoryCacheService,
+                           IMemoryCacheService memoryCacheService,
                            IMapper mapper
                          )
         {
@@ -81,8 +82,20 @@ namespace Services
 
         public async Task<bool> Update(IUser user)
         {
-            await _userRepository.UpdateUser(user);
+            try
+            {
+                await _userRepository.UpdateUser(user);
+            }
+            catch (Exception)
+            {
+                throw new BadRequestException("Greska pri izmeni korisnika");
+            }
             return true;
+        }
+        public async Task<IUser>GetByEmail(string email)
+        {
+            var result=await _userRepository.GetByEmail(email);
+            return result;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Services;
+using SharedServices.Interfaces;
 
 namespace WebApp.Attributes
 {
@@ -16,10 +17,10 @@ namespace WebApp.Attributes
     public class MemoryFilter : IActionFilter
     {
         private string _constant;
-        private MemoryCacheService _memoryCacheService;
+        private IMemoryCacheService _memoryCacheService;
         private bool _checkForId;
 
-        public MemoryFilter(MemoryCacheService memoryCacheService, string constant, bool checkForId)
+        public MemoryFilter(IMemoryCacheService memoryCacheService, string constant, bool checkForId)
         {
             _constant = constant;
             _memoryCacheService = memoryCacheService;
@@ -37,7 +38,7 @@ namespace WebApp.Attributes
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            _memoryCacheService.GetResponseFromCache(context);
+            _memoryCacheService.GetResponseFromCache(context ,_constant, _checkForId);
 
         }
     }

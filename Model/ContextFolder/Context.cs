@@ -57,8 +57,9 @@ namespace Model.ContextFolder
                         Id=1,
                         Name="Andjela Filipovic",
                         Email="andjela@gmail.com",
-                        Password="0000",
-                        Salt="1111"
+                        Password="oRdR0yIrrbZFdjs/3mJJ6Qi1/5E=",
+                        Salt="1111",
+                        AccountConfirmed=true
 
                     },
                     new User

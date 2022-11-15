@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Model;
 using Model.ContextFolder;
+using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace Repository
 {
@@ -33,21 +35,19 @@ namespace Repository
             var entityByKeys = await _dbSet.FindAsync(keys);
             return entityByKeys;
         }
-        public async Task UpdateEntity(IT entityForUpdate)
+        public async Task UpdateEntity(IT entity,params object[] keys)
         {
-            var entity = _mapper.Map<T>(entityForUpdate);
-            ////_dbSet.Attach(entity);
-            ////_context.Entry(entity).State = EntityState.Modified;
-            ////await _context.SaveChangesAsync();
-            ////var entityDb = await GetEntityByKey(keys);
-            ////if (entityDb == null)
-            ////{
-            ////    throw new DbUpdateException("No data to be updated.");
-            ////}
-            //_dbSet.Update(entity);
-
-            //_context.Entry(entityDb).CurrentValues.SetValues(entityForUpdate);
-            //await _context.SaveChangesAsync();
+            try
+            {
+                var dbEntity =await GetEntityByKey(keys);
+                _context.Entry(dbEntity).CurrentValues.SetValues(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+                throw new DbUpdateException("No data to update.");
+            }
+          
         }
         public async Task DeleteEntity(T entityForDelete)
         {

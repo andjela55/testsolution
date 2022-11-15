@@ -1,3 +1,4 @@
+using AutoMapper;
 using DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Model.UserRoleClass;
 using Services;
 using Services.HelperServices;
 using Services.Models;
@@ -87,7 +89,7 @@ builder.Services.AddScoped<IEmailHelperService, EmailHelperService>();
 builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 builder.Services.AddResponseCaching();
 builder.Services.AddSingleton<DictionaryService>();
-builder.Services.AddSingleton<MemoryCacheService>();
+builder.Services.AddSingleton<IMemoryCacheService,MemoryCacheService>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddScoped<IUrlHelper>(factory =>
@@ -107,16 +109,13 @@ var connectionString = config.GetSection("ConnectionString").Value;
 builder.Services.StartDto();
 builder.Services.SetRepository(connectionString, config);
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+//builder.Services.AddAutoMapper(typeof(Profile));
 
 var app = builder.Build();
 app.UseStaticFiles();
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
 app.UseSwagger();
 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test.API v1"));
-//}
 
 app.UseHttpsRedirection();
 
@@ -129,4 +128,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 app.Run();
+public partial class Program { }

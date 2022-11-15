@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Model.ContextFolder;
 using Model.UserClass;
+using Shared.Exceptions;
 using Shared.Interfaces.Models;
 using SharedRepository;
 
@@ -24,7 +25,8 @@ namespace Repository
         }
         public async Task<IUser> GetById(long userId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            //var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await GetEntityByKey(userId);
             return user;
         }
         public async Task<List<IUser>> GetAllUsers()
@@ -44,15 +46,15 @@ namespace Repository
         }
         public async Task<bool> UpdateUser(IUser userForUpdate)
         {
-            //var userFromDb = _context.Users.FirstOrDefault(x => x.Id == idUser);
-            //if (userFromDb == null)
-            //{
-            //    throw new DbUpdateException("No data to be updated.");
-            //}
-            //_context.Entry(userFromDb).CurrentValues.SetValues(userForUpdate);
-            //await _context.SaveChangesAsync();
-            //var updateValues = _mapper.Map<User>(userForUpdate);
-            await UpdateEntity(userForUpdate);
+            try
+            {
+
+                await UpdateEntity(userForUpdate, userForUpdate.Id);
+            }
+            catch (Exception ex)
+            {
+                throw new BadRequestException("Error - user repo");
+            }
             return true;
         }
     }

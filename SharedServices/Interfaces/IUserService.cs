@@ -9,5 +9,6 @@ namespace SharedServices.Interfaces
         Task<bool> Insert(IUserInsert user);
         Task<IUser> GetById(long id);
         Task<bool> Update(IUser user);
+        Task<IUser> GetByEmail(string email);
     }
 }
