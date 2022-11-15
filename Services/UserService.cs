@@ -72,23 +72,6 @@ namespace Services
             {
                 throw new BadRequestException("Greska pri kreiranju korisnika");
             }
-            //using TransactionScope transactionScope = new TransactionScope();
-            //try
-            //{
-            //    var userInserted = await _userRepository.Create(userForInsert);
-            //    foreach (var roleId in user.Roles)
-            //    {
-            //        var userRole = new UserRole { RoleId = roleId, UserId = userInserted.Id };
-            //        await _userRoleRepository.Create(userRole);
-            //    }
-            //    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
-            //    transactionScope.Complete();
-            //    transactionScope.Dispose();
-            //}
-            //catch (TransactionException ex)
-            //{
-            //    transactionScope.Dispose();
-            //}
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {
                 try
@@ -120,7 +103,6 @@ namespace Services
 
         public async Task<bool> Update(IUserInsert user)
         {
-           
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                 try
@@ -136,22 +118,6 @@ namespace Services
                 {
                     transaction.Rollback();
                 }
-            
-           
-            //    using TransactionScope transactionScope = new TransactionScope();
-            //try
-            //{
-            //    var userForUpdate = _mapper.Map<ServicesUser>(user);
-            //    await _userRepository.UpdateUser(userForUpdate);
-            //    await _userRoleRepository.AddForUser(userForUpdate.Id, user.Roles);
-
-            //    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
-            //    transactionScope.Complete();
-            //    transactionScope.Dispose();
-            //}
-            //catch (TransactionException ex)
-            //{
-            //    transactionScope.Dispose();
             }
             return true;
         }
