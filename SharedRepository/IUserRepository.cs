@@ -1,4 +1,5 @@
 ﻿using Shared.Interfaces.Models;
+using Shared.Interfaces.ModelsExtended;
 
 namespace SharedRepository
 {

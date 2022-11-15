@@ -9,9 +9,9 @@ namespace Services.Models.UserClass
         public ServicesUserMapper()
         {
             CreateMap<IUser, ServicesUser>();
-            CreateMap<IUserInsert, ServicesUser>()
-                     .ForMember(dest => dest.UserRoles,
-                                opts => opts.MapFrom(src => src.Roles.Select(x => new ServicesUserRole() { RoleId = x })));
+            CreateMap<IUserInsert, ServicesUser>();
+                     //.ForMember(dest => dest.UserRoles,
+                     //           opts => opts.MapFrom(src => src.Roles.Select(x => new ServicesUserRole() { RoleId = x })));
         }
     }
 }

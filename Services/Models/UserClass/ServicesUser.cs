@@ -1,5 +1,6 @@
 ﻿using Services.Models.UserTokenClass;
 using Shared.Interfaces.Models;
+using Shared.Interfaces.ModelsExtended;
 
 namespace Services.Models.UserClass
 {
@@ -15,9 +16,9 @@ namespace Services.Models.UserClass
 
         public bool AccountConfirmed { get; set; }
 
-        public virtual ICollection<ServicesUserRole> UserRoles { get; set; }
+        //public virtual ICollection<ServicesUserRole> UserRoles { get; set; }
 
-        public virtual ICollection<ServicesUserToken> UserTokens { get; set; }
+        //public virtual ICollection<ServicesUserToken> UserTokens { get; set; }
 
     }
 }

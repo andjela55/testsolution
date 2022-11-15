@@ -4,6 +4,7 @@ using Model.ContextFolder;
 using Model.UserClass;
 using Shared.Exceptions;
 using Shared.Interfaces.Models;
+using Shared.Interfaces.ModelsExtended;
 using SharedRepository;
 
 namespace Repository
@@ -48,7 +49,6 @@ namespace Repository
         {
             try
             {
-
                 await UpdateEntity(userForUpdate, userForUpdate.Id);
             }
             catch (Exception ex)

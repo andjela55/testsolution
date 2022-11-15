@@ -68,7 +68,7 @@ namespace WebApp.Controllers
         }
         [HttpPut]
         [AllowAnonymous]
-        public async Task<ActionResult<bool>> Update([FromBody] UserDto user)
+        public async Task<ActionResult<bool>> Update([FromBody] UserInsertDto user)
         {
             var result = await _service.Update(user);
             return Ok(result);

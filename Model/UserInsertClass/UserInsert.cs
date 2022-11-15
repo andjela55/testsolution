@@ -4,6 +4,8 @@ namespace Model.UserInsertClass
 {
     public class UserInsert : IUserInsert
     {
+        public long Id { get; set; }
+
         public string Name { get; set; }
 
         public string Email { get; set; }
@@ -12,6 +14,5 @@ namespace Model.UserInsertClass
 
         public string Salt { get; set; }
         public IEnumerable<long> Roles { get; set; }
-
     }
 }

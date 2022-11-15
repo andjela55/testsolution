@@ -19,9 +19,6 @@ namespace Repository
         }
         public async Task<bool> Create(IUserToken userToken)
         {
-            //var userTokenForInsert = _mapper.Map<UserToken>(userToken);
-            //await _context.UserTokens.AddAsync(userTokenForInsert);
-            //await _context.SaveChangesAsync();
             await InsertEntity(userToken);
             return true;
         }
@@ -32,13 +29,7 @@ namespace Repository
         }
         public async Task<bool> Update(long id, IUserToken tokenForUpdate)
         {
-            var tokenFromDb = _context.UserTokens.FirstOrDefault(x => x.Id == id);
-            if (tokenFromDb == null)
-            {
-                throw new DbUpdateException("No data to be updated.");
-            }
-            _context.Entry(tokenFromDb).CurrentValues.SetValues(tokenForUpdate);
-            await _context.SaveChangesAsync();
+            await UpdateEntity(tokenForUpdate, id);
             return true;
 
         }

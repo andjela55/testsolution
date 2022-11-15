@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Model;
+using Model.ContextFolder;
 using Model.UserClass;
 using Services.Models.UserClass;
 using Shared.Constants;
@@ -8,6 +10,8 @@ using Shared.Interfaces.Models;
 using SharedRepository;
 using SharedServices.Interfaces;
 using System.Text.Json;
+using System.Transactions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Services
 {
@@ -16,21 +20,25 @@ namespace Services
         private IHttpContextAccessor _httpContextAccessor;
         private IMemoryCacheService _memoryCacheService;
         private IUserRepository _userRepository;
+        private IUserRoleRepository _userRoleRepository;
         private readonly IMapper _mapper;
+        private Context _context;
         public UserService(
                            IHttpContextAccessor httpContextAccessor,
                            IUserRepository userRepository,
                            IUserRoleRepository userRoleRepository,
                            IRoleRepository roleRepository,
                            IMemoryCacheService memoryCacheService,
-                           IMapper mapper
+                           IMapper mapper,
+                           Context context
                          )
         {
             _httpContextAccessor = httpContextAccessor;
             _memoryCacheService = memoryCacheService;
             _userRepository = userRepository;
             _mapper = mapper;
-
+            _userRoleRepository = userRoleRepository;
+            _context = context;
         }
         public async Task<IUser> GetCurrentUser()
         {
@@ -64,12 +72,42 @@ namespace Services
             {
                 throw new BadRequestException("Greska pri kreiranju korisnika");
             }
-            else
+            //using TransactionScope transactionScope = new TransactionScope();
+            //try
+            //{
+            //    var userInserted = await _userRepository.Create(userForInsert);
+            //    foreach (var roleId in user.Roles)
+            //    {
+            //        var userRole = new UserRole { RoleId = roleId, UserId = userInserted.Id };
+            //        await _userRoleRepository.Create(userRole);
+            //    }
+            //    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+            //    transactionScope.Complete();
+            //    transactionScope.Dispose();
+            //}
+            //catch (TransactionException ex)
+            //{
+            //    transactionScope.Dispose();
+            //}
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                await _userRepository.Create(userForInsert);
-                _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+                try
+                {
+                    var userInserted = await _userRepository.Create(userForInsert);
+                    foreach (var roleId in user.Roles)
+                    {
+                        var userRole = new UserRole { RoleId = roleId, UserId = userInserted.Id };
+                        await _userRoleRepository.Create(userRole);
+                    }
+                    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+                return true;
             }
-            return true;
         }
         private async Task ValidateInsert(IUser user, List<string> errors)
         {
@@ -80,22 +118,48 @@ namespace Services
             }
         }
 
-        public async Task<bool> Update(IUser user)
+        public async Task<bool> Update(IUserInsert user)
         {
-            try
-            {
-                await _userRepository.UpdateUser(user);
-            }
-            catch (Exception)
-            {
-                throw new BadRequestException("Greska pri izmeni korisnika");
+           
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                try
+                {
+                    var userForUpdate = _mapper.Map<ServicesUser>(user);
+                    await _userRepository.UpdateUser(userForUpdate);
+                    await _userRoleRepository.AddForUser(userForUpdate.Id, user.Roles);
+
+                    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+                    transaction.Commit();
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                }
+            
+           
+            //    using TransactionScope transactionScope = new TransactionScope();
+            //try
+            //{
+            //    var userForUpdate = _mapper.Map<ServicesUser>(user);
+            //    await _userRepository.UpdateUser(userForUpdate);
+            //    await _userRoleRepository.AddForUser(userForUpdate.Id, user.Roles);
+
+            //    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+            //    transactionScope.Complete();
+            //    transactionScope.Dispose();
+            //}
+            //catch (TransactionException ex)
+            //{
+            //    transactionScope.Dispose();
             }
             return true;
         }
-        public async Task<IUser>GetByEmail(string email)
+        public async Task<IUser> GetByEmail(string email)
         {
-            var result=await _userRepository.GetByEmail(email);
+            var result = await _userRepository.GetByEmail(email);
             return result;
         }
+
     }
 }

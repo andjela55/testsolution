@@ -61,7 +61,7 @@ namespace Services
             };
             await _userTokenRepository.Create(userToken);
             var pageLink = _configObject.PageLink + $"?id={insertedUser.Id}&token={userToken.Token}";
-            await _userRoleRepository.AddRolesForUser(insertedUser.Id, userData.Roles);
+            await _userRoleRepository.AddForUser(insertedUser.Id, userData.Roles);
             bool emailResponse = _emailService.SendEmail(user.Email, pageLink);
             if (!emailResponse)
             {
