@@ -44,7 +44,7 @@ namespace Services
                 throw new Exception($"User with email [{userData.Email}] already exists!");
             }
             using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
-            var salt = _hashService.GenerateSalt();
+            var salt = _hashService.GenerateRandomString();
             var user = _mapper.Map<ServicesUser>(userData);
             user.Password = _hashService.HashPassword(userData.Password, salt, 20, 20);
             user.Salt = salt;

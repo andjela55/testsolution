@@ -2,7 +2,7 @@
 {
     public interface IHashService
     {
-        string GenerateSalt();
+        string GenerateRandomString();
         string HashPassword(string password, string salt, int nIterations, int nHash);
     }
 }

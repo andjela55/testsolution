@@ -41,8 +41,13 @@ namespace Model.ContextFolder
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new PermissionConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
             modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
+            modelBuilder.ApplyConfiguration(new UserTokenConfiguration());
+
             SeedData(modelBuilder);
         }
 

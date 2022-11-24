@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using MySqlX.XDevAPI.Common;
+﻿using DTO.Incoming;
+using DTO.Outgoing;
 using Newtonsoft.Json;
-using Shared.Interfaces.Models;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using Test.Fixture;
+using Test.Helpers;
 
 namespace Test.IntegrationTests.UserTest
 {
@@ -26,15 +27,10 @@ namespace Test.IntegrationTests.UserTest
             _httpClient = factory.CreateClient();
         }
 
-        //public UserIntegrationTest(TestHostFixture testHostFixture)
-        //{
-        //    httpClient = testHostFixture.httpClient;
-
-        //}
 
         [Theory]
         [InlineData("/api/user/getCurrent")]
-        public async Task Test1(string api)
+        public async Task CurrentUserTest(string api)
         {
             var data = JsonConvert.SerializeObject(new { Email = "andjela@gmail.com", Password = "0000" });
             StringContent stringContent = new StringContent(data, Encoding.UTF8,
@@ -49,10 +45,39 @@ namespace Test.IntegrationTests.UserTest
 
             var userData = await _httpClient.GetAsync(api);
             Assert.NotNull(userData);
+            content = await userData.Content.ReadAsStringAsync();
+            var user = JsonConvert.DeserializeObject<UserDto>(content);
+            Assert.NotNull(user);
+            Assert.Equal(typeof(UserDto), user.GetType());
 
-            var userList = JsonConvert.DeserializeObject<List<IUser>>(userData.Content.ToString());
-            Assert.NotEmpty(userList);
         }
+        [Theory]
+        [ClassData(typeof(UserTheoryData))]
+        public async Task InsertUserTest(UserInsertDto userData)
+        {
+            //logging in
+            var data = JsonConvert.SerializeObject(new { Email = "andjela@gmail.com", Password = "0000" });
+            StringContent stringContent = new StringContent(data, Encoding.UTF8,
+                                    "application/json");
+            var tokenResult = await _httpClient.PostAsync("/api/login/login", stringContent);
+            var content = await tokenResult.Content.ReadAsStringAsync();
+            Assert.True(tokenResult.StatusCode == HttpStatusCode.OK);
+
+            //request headers
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.Authorization
+                         = new AuthenticationHeaderValue("Bearer", content.ToString());
+            //post new user data
+            if (userData != null)
+            {
+                var result = await _httpClient.PostAsJsonAsync("/api/user", userData);
+                Assert.True(result.StatusCode == HttpStatusCode.OK);
+                content = await result.Content.ReadAsStringAsync();
+                Assert.NotNull(content);
+            }
+
+        }
+
     }
 
 }

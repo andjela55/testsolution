@@ -1,11 +1,13 @@
 ﻿
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Model.ContextFolder;
 using Model.UserClass;
 using Moq;
 using Services;
 using Shared.Interfaces.Models;
 using SharedRepository;
+using SharedServices;
 using SharedServices.Interfaces;
 
 namespace Test.UserTest
@@ -21,8 +23,10 @@ namespace Test.UserTest
             Mock<IRoleRepository> roleRepository = new Mock<IRoleRepository>();
             Mock<IMemoryCacheService> memoryCacheService = new Mock<IMemoryCacheService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
-            UserService service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object);
-
+            Mock<Context> context = new Mock<Context>();
+            Mock<IHashService> hashService = new Mock<IHashService>();
+            hashService = new Mock<IHashService>();
+            UserService service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object, hashService.Object);
             userRepository.Setup(x => x.GetById(2))
                           .ReturnsAsync(new User { Id = 2, Name = "Testing user" });
 
@@ -49,7 +53,8 @@ namespace Test.UserTest
             Mock<IRoleRepository> roleRepository = new Mock<IRoleRepository>();
             Mock<IMemoryCacheService> memoryCacheService = new Mock<IMemoryCacheService>();
             Mock<IMapper> mapper = new Mock<IMapper>();
-            UserService service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object);
+            Mock<IHashService> hashService = new Mock<IHashService>();
+            UserService service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object, hashService.Object);
 
             var mockList = new List<IUser>();
             mockList.Add(new User { Id = 1, Name = "All users response" });
@@ -62,5 +67,5 @@ namespace Test.UserTest
             await Task.CompletedTask;
         }
     }
-     
+
 }

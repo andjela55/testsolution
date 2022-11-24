@@ -8,6 +8,7 @@
     public enum TokenType
     {
         VerificationToken = 1,
-        PasswordResetToken
+        PasswordResetToken,
+        RefreshToken
     }
 }

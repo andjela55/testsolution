@@ -4,7 +4,8 @@ namespace SharedServices.Interfaces
 {
     public interface ILoginService
     {
-        Task<string> LoginUser(ILogin loginData);
+        Task<ILoginResponse> LoginUser(ILogin loginData);
         Task<bool> SetInitialPassword(ILogin data);
+        Task<ILoginResponse> RefreshTokens(ILoginResponse loginData);
     }
 }

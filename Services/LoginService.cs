@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Services.Models.LoginResponseClass;
 using Services.Models.UserClass;
+using Services.Models.UserTokenClass;
+using Shared.Enums;
 using Shared.Exceptions;
 using Shared.Interfaces.Models;
 using SharedRepository;
@@ -23,13 +26,15 @@ namespace Services
         private IUserRepository _userRepository;
         private IMapper _mapper;
         private IHashService _hashService;
+        private IUserTokenRepository _userTokenRepository;
 
         public LoginService(IConfiguration config,
                             IUserRoleRepository userRoleRepository,
                             IRolePermissionRepository rolePermissionRepository,
                             IUserRepository userRepository,
                             IMapper mapper,
-                            IHashService hashService)
+                            IHashService hashService,
+                            IUserTokenRepository userTokenRepository)
         {
             _config = config;
             _userRoleRepository = userRoleRepository;
@@ -37,14 +42,15 @@ namespace Services
             _userRepository = userRepository;
             _mapper = mapper;
             _hashService = hashService;
+            _userTokenRepository = userTokenRepository;
         }
 
-        public async Task<string> LoginUser(ILogin loginData)
+        public async Task<ILoginResponse> LoginUser(ILogin loginData)
         {
             var user = await AuthenticateUser(loginData.Email, loginData.Password);
             if (user == null)
             {
-                return "";
+                throw new Exception("User doesn't exist.");
             }
             if (!user.AccountConfirmed)
             {
@@ -55,7 +61,21 @@ namespace Services
             {
                 throw new Exception("Error while generating token");
             }
-            return token;
+            var refreshToken = _hashService.GenerateRandomString();
+            var newUserTokenItem = new ServicesUserToken()
+            {
+                TokenType = TokenType.RefreshToken,
+                ExpirationDate = DateTime.UtcNow.AddDays(1),
+                UserId = user.Id,
+                Token = refreshToken
+            };
+            await _userTokenRepository.Create(newUserTokenItem);
+            var response = new ServiceLoginResponse()
+            {
+                JwtToken = token,
+                RefreshToken = refreshToken
+            };
+            return response;
         }
         private async Task<string> GenerateJSONWebToken(long id)
         {
@@ -75,6 +95,7 @@ namespace Services
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials);
+
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -104,7 +125,7 @@ namespace Services
         {
             try
             {
-                var salt = _hashService.GenerateSalt();
+                var salt = _hashService.GenerateRandomString();
                 var userDb = await _userRepository.GetByEmail(data.Email);
                 var user = _mapper.Map<ServicesUser>(userDb);
                 user.Password = _hashService.HashPassword(data.Password, salt, 20, 20);
@@ -117,6 +138,46 @@ namespace Services
             }
             return true;
         }
+        public async Task<ILoginResponse> RefreshTokens(ILoginResponse loginData)
+        {
+
+            //check refresh token
+            var oldRefreshToken = await _userTokenRepository.GetRefreshTokenByValue(loginData.RefreshToken);
+            if (oldRefreshToken == null)
+            {
+                throw new BadRequestException("Credentials are not correct, please log in again.");
+            }
+            //set old refresh token to USED
+            await _userTokenRepository.SetUsedRefreshToken(oldRefreshToken);
+
+            //create new JWT
+            var token = await GenerateJSONWebToken(oldRefreshToken.UserId);
+            if (token == null)
+            {
+                throw new Exception("Error while generating token");
+            }
+            //create new refresh token
+            var newRefreshToken = _hashService.GenerateRandomString();
+
+            var newUserTokenItem = new ServicesUserToken()
+            {
+                TokenType = TokenType.RefreshToken,
+                ExpirationDate = DateTime.UtcNow.AddDays(1),
+                UserId = oldRefreshToken.UserId,
+                Token = newRefreshToken
+            };
+            //add new refresh token to db
+            await _userTokenRepository.Create(newUserTokenItem);
+
+            //return new tokens
+            var response = new ServiceLoginResponse()
+            {
+                JwtToken = token,
+                RefreshToken = newRefreshToken
+            };
+            return response;
+        }
+
     }
 }
 

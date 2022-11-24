@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Model;
-using Model.ContextFolder;
-using Model.UserClass;
 using Services.Models.UserClass;
 using Shared.Constants;
 using Shared.Exceptions;
@@ -10,10 +8,8 @@ using Shared.Interfaces.Models;
 using SharedRepository;
 using SharedServices;
 using SharedServices.Interfaces;
-using System.Collections;
 using System.Text.Json;
 using System.Transactions;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Services
 {
@@ -24,7 +20,6 @@ namespace Services
         private IUserRepository _userRepository;
         private IUserRoleRepository _userRoleRepository;
         private readonly IMapper _mapper;
-        private Context _context;
         private IHashService _hashService;
         public UserService(
                            IHttpContextAccessor httpContextAccessor,
@@ -33,7 +28,6 @@ namespace Services
                            IRoleRepository roleRepository,
                            IMemoryCacheService memoryCacheService,
                            IMapper mapper,
-                           Context context,
                            IHashService hashService
                          )
         {
@@ -42,7 +36,6 @@ namespace Services
             _userRepository = userRepository;
             _mapper = mapper;
             _userRoleRepository = userRoleRepository;
-            _context = context;
             _hashService = hashService;
         }
         public async Task<IUser> GetCurrentUser()
@@ -80,7 +73,7 @@ namespace Services
             {
                 throw new BadRequestException("Greska pri kreiranju korisnika");
             }
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            using TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
             try
             {
                 var userInserted = await _userRepository.Create(userForInsert);
@@ -90,11 +83,12 @@ namespace Services
                     await _userRoleRepository.Create(userRole);
                 }
                 _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
-                transaction.Commit();
+                scope.Complete();
+                scope.Dispose();
             }
             catch (Exception)
             {
-                transaction.Rollback();
+                scope.Dispose();
             }
             return true;
         }
@@ -109,20 +103,22 @@ namespace Services
 
         public async Task<bool> Update(IUserInsert user)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-                try
-                {
-                    var userForUpdate = _mapper.Map<ServicesUser>(user);
-                    await _userRepository.UpdateUser(userForUpdate);
-                    await _userRoleRepository.AddForUser(userForUpdate.Id, user.Roles);
+            using TransactionScope scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+            try
+            {
+                var userForUpdate = _mapper.Map<ServicesUser>(user);
+                await _userRepository.UpdateUser(userForUpdate);
+                await _userRoleRepository.AddForUser(userForUpdate.Id, user.Roles);
 
-                    _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                }
+                _memoryCacheService.RemoveItem(MemoryAttributeConstants.GetAllUsers);
+                scope.Complete();
+                scope.Dispose();
+            }
+            catch (TransactionAbortedException ex)
+            {
+                scope.Dispose();
+            }
+
             return true;
         }
         public async Task<IUser> GetByEmail(string email)
@@ -130,9 +126,9 @@ namespace Services
             var result = await _userRepository.GetByEmail(email);
             return result;
         }
-        private async void PrepareForInsert(ServicesUser user)
+        private void PrepareForInsert(ServicesUser user)
         {
-            user.Salt = _hashService.GenerateSalt();
+            user.Salt = _hashService.GenerateRandomString();
             user.Password = _hashService.HashPassword(user.Password, user.Salt, 20, 20);
         }
 

@@ -8,6 +8,7 @@ namespace Model.UserRoleClass
         public void Configure(EntityTypeBuilder<UserRole> builder)
         {
             builder.HasKey(x => new { x.UserId, x.RoleId });
+
             builder.HasOne(x => x.User)
                .WithMany(x => x.UserRoles)
                .HasForeignKey(x => x.UserId);

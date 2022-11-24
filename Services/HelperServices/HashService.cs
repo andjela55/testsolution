@@ -12,7 +12,7 @@ namespace Services.HelperServices
             _config = config;
 
         }
-        public string GenerateSalt()
+        public string GenerateRandomString()
         {
             var randomNumber = new byte[32];
             string salt = "";

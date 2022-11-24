@@ -3,7 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SharedRepository;
 
-namespace Services.Models
+namespace Services
 {
     public class HostedService : BackgroundService
     {

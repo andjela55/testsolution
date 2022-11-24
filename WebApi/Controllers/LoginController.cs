@@ -1,5 +1,8 @@
-﻿using DTO.Incoming;
+﻿using AutoMapper;
+using DTO.Incoming;
+using DTO.Outgoing.LoginDtoClass;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Interfaces.Models;
 using SharedServices.Interfaces;
 
 namespace WebApi.Controllers
@@ -9,17 +12,20 @@ namespace WebApi.Controllers
     public class LoginController : Controller
     {
         private readonly ILoginService _service;
-        public LoginController(ILoginService service)
+        private readonly IMapper _mapper;
+        public LoginController(ILoginService service, IMapper mapper)
         {
             _service = service;
+            _mapper = mapper;
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<ActionResult<string>> LoginUser([FromBody]LoginDto loginData)
+        public async Task<ActionResult<ILoginResponse>> LoginUser([FromBody] LoginDto loginData)
         {
-            var token = await _service.LoginUser(loginData);
-            return Ok(token);
+            var result = await _service.LoginUser(loginData);
+            var response = _mapper.Map<LoginResponseDto>(result);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -29,6 +35,16 @@ namespace WebApi.Controllers
             var token = await _service.SetInitialPassword(loginData);
             return Ok(token);
         }
+
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<ActionResult<ILoginResponse>> RefreshTokens([FromBody] LoginResponseDto loginData)
+        {
+            var result = await _service.RefreshTokens(loginData);
+            var response = _mapper.Map<LoginResponseDto>(result);
+            return Ok(response);
+        }
+
 
     }
 }

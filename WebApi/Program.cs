@@ -1,4 +1,3 @@
-using AutoMapper;
 using DTO;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -7,12 +6,11 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Model.UserRoleClass;
 using Services;
 using Services.HelperServices;
-using Services.Models;
 using SharedServices;
 using SharedServices.Interfaces;
+using System.Reflection;
 using System.Text;
 
 //var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -89,7 +87,7 @@ builder.Services.AddScoped<IEmailHelperService, EmailHelperService>();
 builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
 builder.Services.AddResponseCaching();
 builder.Services.AddSingleton<DictionaryService>();
-builder.Services.AddSingleton<IMemoryCacheService,MemoryCacheService>();
+builder.Services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddScoped<IUrlHelper>(factory =>
@@ -106,10 +104,10 @@ IConfiguration config = new ConfigurationBuilder()
 .Build();
 var connectionString = config.GetSection("ConnectionString").Value;
 
-builder.Services.StartDto();
-builder.Services.SetRepository(connectionString, config);
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//builder.Services.AddAutoMapper(typeof(Profile));
+//automapper settings
+var assemblies = new List<Assembly> { builder.Services.GetDtoAssembly() };
+assemblies.AddRange(builder.Services.SetRepository(connectionString, config));
+builder.Services.AddAutoMapper(assemblies);
 
 var app = builder.Build();
 app.UseStaticFiles();

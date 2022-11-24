@@ -5,6 +5,7 @@ using Moq;
 using Services;
 using Shared.Interfaces.Models;
 using SharedRepository;
+using SharedServices;
 using SharedServices.Interfaces;
 
 namespace Test.UnitTests.UserTest
@@ -18,6 +19,7 @@ namespace Test.UnitTests.UserTest
         private Mock<IMemoryCacheService> memoryCacheService;
         private Mock<IMapper> mapper;
         private UserService service;
+        private Mock<IHashService> hashService;
         public UserTest()
         {
             httpContextAccessor = new Mock<IHttpContextAccessor>();
@@ -26,7 +28,8 @@ namespace Test.UnitTests.UserTest
             roleRepository = new Mock<IRoleRepository>();
             memoryCacheService = new Mock<IMemoryCacheService>();
             mapper = new Mock<IMapper>();
-            service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object);
+            hashService = new Mock<IHashService>();
+            service = new UserService(httpContextAccessor.Object, userRepository.Object, userRoleRepository.Object, roleRepository.Object, memoryCacheService.Object, mapper.Object, hashService.Object);
         }
         [Fact]
         public async Task GetUserByIdTest()
