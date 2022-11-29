@@ -61,7 +61,7 @@ namespace Services
             {
                 throw new Exception("Error while generating token");
             }
-            var refreshToken = _hashService.GenerateRandomString();
+            var refreshToken = await GenerateRefreshToken(user.Id);
             var newUserTokenItem = new ServicesUserToken()
             {
                 TokenType = TokenType.RefreshToken,
@@ -91,7 +91,7 @@ namespace Services
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
-                _config["Jwt:Issuer"],
+                _config["Jwt:Audience"],
                 claims,
                 expires: DateTime.Now.AddMinutes(15),
                 signingCredentials: credentials);
@@ -138,26 +138,22 @@ namespace Services
             }
             return true;
         }
-        public async Task<ILoginResponse> RefreshTokens(ILoginResponse loginData)
+        public async Task<ILoginResponse> RefreshTokens(string refreshToken)
         {
+            if (ValidateRefreshToken(refreshToken) == false)
+            {
+                throw new BadRequestException("Credentials are not correct, please log in again.");
+            }
 
-            //check refresh token
-            var oldRefreshToken = await _userTokenRepository.GetRefreshTokenByValue(loginData.RefreshToken);
+            var oldRefreshToken = await _userTokenRepository.GetRefreshTokenByValue(refreshToken);
             if (oldRefreshToken == null)
             {
                 throw new BadRequestException("Credentials are not correct, please log in again.");
             }
-            //set old refresh token to USED
             await _userTokenRepository.SetUsedRefreshToken(oldRefreshToken);
 
-            //create new JWT
-            var token = await GenerateJSONWebToken(oldRefreshToken.UserId);
-            if (token == null)
-            {
-                throw new Exception("Error while generating token");
-            }
-            //create new refresh token
-            var newRefreshToken = _hashService.GenerateRandomString();
+            var newToken = await GenerateJSONWebToken(oldRefreshToken.UserId);
+            var newRefreshToken = await GenerateRefreshToken(oldRefreshToken.UserId);
 
             var newUserTokenItem = new ServicesUserToken()
             {
@@ -172,11 +168,59 @@ namespace Services
             //return new tokens
             var response = new ServiceLoginResponse()
             {
-                JwtToken = token,
+                JwtToken = newToken,
                 RefreshToken = newRefreshToken
             };
             return response;
         }
+        private async Task<string> GenerateRefreshToken(long id)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["RefreshToken:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[] {
+            new Claim("Id", id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+
+            var refreshToken = new JwtSecurityToken(_config["RefreshToken:Issuer"],
+                _config["RefreshToken:Audience"],
+                claims,
+                expires: DateTime.Now.AddDays(7),
+                signingCredentials: credentials);
+            return new JwtSecurityTokenHandler().WriteToken(refreshToken);
+        }
+        private bool ValidateRefreshToken(string token)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var key = Encoding.ASCII.GetBytes(_config["RefreshToken:Key"]);
+                var issuer = _config["RefreshToken:Issuer"];
+                var audience = _config["RefreshToken:Audience"];
+                //var key = _config["RefreshToken:Key"];
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = true,
+                    ValidIssuer = issuer,
+                    ValidateAudience = true,
+                    ValidAudience = audience,
+                    ValidateLifetime = true,
+                    // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                    ClockSkew = TimeSpan.Zero
+                }, out SecurityToken validatedToken);
+
+            }
+            catch
+            {
+                // validation fails
+                return false;
+            }
+            return true;
+        }
+
 
     }
 }

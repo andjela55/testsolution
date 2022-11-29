@@ -6,7 +6,7 @@ using Model.UserTokenClass;
 using Shared.Enums;
 using Shared.Interfaces.Models;
 using SharedRepository;
-
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Repository
 {
@@ -55,20 +55,31 @@ namespace Repository
         }
         public async Task<IUserToken> GetRefreshTokenByValue(string refreshToken)
         {
-            var userId = GetCurrentUserId();
+            var userIdString = GetClaimFromToken(refreshToken, "Id");
+            var userId = (long)Convert.ToDouble(userIdString);
+
             var refreshTokenDb = await _context.UserTokens.Where(x => x.TokenType == TokenType.RefreshToken
                                                                    && x.Token == refreshToken
                                                                    && x.IsUsed == false
-                                                                   && x.UserId == userId
-                                                                   && x.ExpirationDate > DateTime.UtcNow).FirstOrDefaultAsync();
+                                                                   && x.UserId == userId).FirstOrDefaultAsync();
             return refreshTokenDb;
         }
         public async Task SetUsedRefreshToken(IUserToken refreshToken)
         {
-            var refreshTokenDb = await _context.UserTokens.Where(x => x.Id == refreshToken.Id).FirstOrDefaultAsync();
+            //var refreshTokenDb = await _context.UserTokens.Where(x => x.Id == refreshToken.Id).FirstOrDefaultAsync();
+            var refreshTokenDb = _mapper.Map<UserToken>(refreshToken);
             refreshTokenDb.IsUsed = true;
             await _context.SaveChangesAsync();
             await Task.CompletedTask;
+        }
+
+        private string GetClaimFromToken(string token, string claimType)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token);
+            var tokenS = jsonToken as JwtSecurityToken;
+            var claimValue = tokenS.Claims.First(claim => claim.Type.Equals(claimType)).Value;
+            return claimValue;
         }
 
     }

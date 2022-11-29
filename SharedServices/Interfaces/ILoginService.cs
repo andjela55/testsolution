@@ -6,6 +6,6 @@ namespace SharedServices.Interfaces
     {
         Task<ILoginResponse> LoginUser(ILogin loginData);
         Task<bool> SetInitialPassword(ILogin data);
-        Task<ILoginResponse> RefreshTokens(ILoginResponse loginData);
+        Task<ILoginResponse> RefreshTokens(string refreshToken);
     }
 }

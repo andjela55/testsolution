@@ -38,13 +38,12 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("refresh")]
-        public async Task<ActionResult<ILoginResponse>> RefreshTokens([FromBody] LoginResponseDto loginData)
+        public async Task<ActionResult<ILoginResponse>> RefreshTokens([FromBody] string refreshToken)
         {
-            var result = await _service.RefreshTokens(loginData);
+            var result = await _service.RefreshTokens(refreshToken);
             var response = _mapper.Map<LoginResponseDto>(result);
             return Ok(response);
         }
-
 
     }
 }
