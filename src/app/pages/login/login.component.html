@@ -1,0 +1,17 @@
+<p>login works!</p>
+
+<form >
+    <mat-form-field appearance="fill">
+      <mat-label>Username</mat-label>
+      <input type="text" matInput placeholder="Username" name="username" [(ngModel)]="user.email" >
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Password</mat-label>
+        <input type="password" matInput placeholder="Password"  name="password" [(ngModel)]="user.password" >
+      </mat-form-field>
+
+  </form>
+  <div fxLayoutAlign="start center">
+    <button mat-raised-button color="primary" (click)="onLogin()" style="margin-left: 40%;">Log in</button>
+  </div>
