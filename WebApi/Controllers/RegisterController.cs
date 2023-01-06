@@ -21,6 +21,7 @@ namespace WebApi.Controllers
             await _service.RegisterUser(userData);
             return Ok();
         }
+
         [HttpPost]
         [Route("confirm/{id}/{token}")]
         [AllowAnonymous]

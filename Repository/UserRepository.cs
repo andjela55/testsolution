@@ -4,7 +4,6 @@ using Model.ContextFolder;
 using Model.UserClass;
 using Shared.Exceptions;
 using Shared.Interfaces.Models;
-using Shared.Interfaces.ModelsExtended;
 using SharedRepository;
 
 namespace Repository
@@ -56,6 +55,12 @@ namespace Repository
                 throw new BadRequestException("Error - user repo");
             }
             return true;
+        }
+
+        public async Task<List<IUser>> GetUsersByIds(IEnumerable<long> ids)
+        {
+            var users = await _context.Users.Where(x => ids.Contains(x.Id)).ToListAsync();
+            return users.ToList<IUser>();
         }
     }
 }

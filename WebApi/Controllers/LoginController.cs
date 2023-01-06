@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DTO.Incoming;
 using DTO.Outgoing.LoginDtoClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Interfaces.Models;
 using SharedServices.Interfaces;
@@ -9,6 +10,7 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class LoginController : Controller
     {
         private readonly ILoginService _service;
@@ -21,6 +23,7 @@ namespace WebApi.Controllers
 
         [HttpPost]
         [Route("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<ILoginResponse>> LoginUser([FromBody] LoginDto loginData)
         {
             var result = await _service.LoginUser(loginData);

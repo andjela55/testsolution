@@ -1,5 +1,4 @@
 ﻿using Shared.Interfaces.Models;
-using Shared.Interfaces.ModelsExtended;
 
 namespace SharedRepository
 {
@@ -11,5 +10,6 @@ namespace SharedRepository
         Task<IUser> Create(IUser user);
         Task<IUser> GetByEmail(string email);
         Task<bool> UpdateUser(IUser userForUpdate);
+        Task<List<IUser>> GetUsersByIds(IEnumerable<long> ids);
     }
 }

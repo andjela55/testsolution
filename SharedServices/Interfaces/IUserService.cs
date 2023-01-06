@@ -10,5 +10,6 @@ namespace SharedServices.Interfaces
         Task<IUser> GetById(long id);
         Task<bool> Update(IUserInsert user);
         Task<IUser> GetByEmail(string email);
+        Task<List<IUser>> GetByIds(IEnumerable<long> ids);
     }
 }

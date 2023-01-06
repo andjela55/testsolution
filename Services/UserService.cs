@@ -132,5 +132,10 @@ namespace Services
             user.Password = _hashService.HashPassword(user.Password, user.Salt, 20, 20);
         }
 
+        public async Task<List<IUser>> GetByIds(IEnumerable<long> ids)
+        {
+            var users = await _userRepository.GetUsersByIds(ids);
+            return users;
+        }
     }
 }

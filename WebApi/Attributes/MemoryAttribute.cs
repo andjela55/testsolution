@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Services;
 using SharedServices.Interfaces;
 
 namespace WebApp.Attributes
@@ -29,16 +28,13 @@ namespace WebApp.Attributes
 
         public void OnActionExecuted(ActionExecutedContext context)
         {
-            ////var req = context.HttpContext.Request.Path.ToString();
-            ////var result = context.Result;
-            ////_memoryCache.Set(req, result);
-            ////_dictionaryService.AddElementToDictionary(_constant, req);
+
             _memoryCacheService.SaveHttpResponse(_constant, context, _checkForId);
         }
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            _memoryCacheService.GetResponseFromCache(context ,_constant, _checkForId);
+            _memoryCacheService.GetResponseFromCache(context, _constant, _checkForId);
 
         }
     }
