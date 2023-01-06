@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "generate-client-sdk": "openapi-generator-cli generate -i http://localhost:35213/swagger/v1/swagger.json -g typescript-angular -o src/app"
+    "generate-client-sdk": "openapi-generator-cli generate -i https://localhost:7158/swagger/v1/swagger.json -g typescript-angular -o src/app"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^15.0.0",
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
+    "@microsoft/signalr": "^7.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.12.0"

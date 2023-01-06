@@ -10,7 +10,7 @@
  * Do not edit the class manually.
  */
 
-export interface LoginResponse {
-  readonly jwtToken?: string | null;
-  readonly refreshToken?: string | null;
+export class LoginResponse {
+  public jwtToken?: string | null;
+  public refreshToken?: string | null;
 }

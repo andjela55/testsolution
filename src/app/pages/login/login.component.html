@@ -1,6 +1,5 @@
-<p>login works!</p>
-
-<form >
+<div class="login-page" >
+  <form class="flex-form">
     <mat-form-field appearance="fill">
       <mat-label>Username</mat-label>
       <input type="text" matInput placeholder="Username" name="username" [(ngModel)]="user.email" >
@@ -10,8 +9,29 @@
         <mat-label>Password</mat-label>
         <input type="password" matInput placeholder="Password"  name="password" [(ngModel)]="user.password" >
       </mat-form-field>
-
+      <div class="buttons">
+        <button mat-raised-button color="primary" (click)="onLogin()" >Log in</button>
+      <!-- <button mat-raised-button color="primary" (click)="getData()" >Get data</button> -->
+      </div>
   </form>
-  <div fxLayoutAlign="start center">
-    <button mat-raised-button color="primary" (click)="onLogin()" style="margin-left: 40%;">Log in</button>
-  </div>
+</div>
+<!-- <div class="table">
+  <table mat-table [dataSource]="users" class="mat-elevation-z8">
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef> Email </th>
+      <td mat-cell *matCellDef="let element"> {{element.email}} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div> -->
+
+
+
+

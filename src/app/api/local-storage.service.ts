@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { UserData } from '../model/user-data';
+import { UserDto } from '../model/userDto';
 
 @Injectable({
   providedIn: 'root',
@@ -6,6 +8,7 @@ import { Injectable } from '@angular/core';
 export class LocalStorageService {
   private readonly TOKEN_KEY = 'token';
   private readonly REFRESH_TOKEN_KEY = 'refresh_token';
+  private readonly CURRENT_USER = 'current_user';
   constructor() {}
 
   public getToken(): string | null {
@@ -23,5 +26,20 @@ export class LocalStorageService {
 
   public setRefreshToken(token: string): void {
     localStorage.setItem(this.REFRESH_TOKEN_KEY, token);
+  }
+  public logoutUser(): void {
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.CURRENT_USER);
+  }
+  public setCurrentUser(user: UserData): void {
+    localStorage.setItem(this.CURRENT_USER, JSON.stringify(user));
+  }
+  public getCurrentUser(): UserData {
+    let user = JSON.parse(localStorage.getItem(this.CURRENT_USER)!) as UserData;
+    return user;
+  }
+  public removeCurrentUser(): void {
+    localStorage.removeItem(this.CURRENT_USER);
   }
 }

@@ -247,7 +247,7 @@ export class LoginService {
    * @param reportProgress flag to report request and response progress.
    */
   public apiLoginRefreshPost(
-    body?: string,
+    body?: LoginResponse,
     observe?: 'body',
     reportProgress?: boolean,
     options?: {
@@ -256,7 +256,7 @@ export class LoginService {
     }
   ): Observable<LoginResponse>;
   public apiLoginRefreshPost(
-    body?: string,
+    body?: LoginResponse,
     observe?: 'response',
     reportProgress?: boolean,
     options?: {
@@ -265,7 +265,7 @@ export class LoginService {
     }
   ): Observable<HttpResponse<LoginResponse>>;
   public apiLoginRefreshPost(
-    body?: string,
+    body?: LoginResponse,
     observe?: 'events',
     reportProgress?: boolean,
     options?: {
@@ -274,7 +274,7 @@ export class LoginService {
     }
   ): Observable<HttpEvent<LoginResponse>>;
   public apiLoginRefreshPost(
-    body?: string,
+    body?: LoginResponse,
     observe: any = 'body',
     reportProgress: boolean = false,
     options?: {

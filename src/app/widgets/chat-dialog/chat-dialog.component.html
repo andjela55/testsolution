@@ -1,0 +1,17 @@
+<p>{{data.name}}</p>
+<mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>CHAT BOX</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <ul>
+            <li *ngFor="let mObj of msgInboxArray">{{mObj.user}} :<br /><span class="msg-italic-style">{{mObj.message}}</span></li>
+          </ul>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input matInput name="message" placeholder="Enter message here.." [(ngModel)]="messageModel.message" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="send()">SEND</button>
+    </mat-card-content>
+  </mat-card>

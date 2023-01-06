@@ -12,9 +12,22 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpinterceptorInterceptor } from './api/interceptor/httpinterceptor.interceptor';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
+import { MatCardModule } from '@angular/material/card';
+import { SignalRChatComponent } from './pages/signal-r-chat/signal-r-chat.component';
+import { AuthorizedComponent } from './pages/authorized/authorized.component';
+import { ChatDialogComponent } from './widgets/chat-dialog/chat-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
-  declarations: [AppComponent, LoginComponent, MainComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    MainComponent,
+    SignalRChatComponent,
+    AuthorizedComponent,
+    ChatDialogComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -24,6 +37,10 @@ import { HttpinterceptorInterceptor } from './api/interceptor/httpinterceptor.in
     MatInputModule,
     FormsModule,
     BrowserAnimationsModule,
+    MatButtonModule,
+    MatTableModule,
+    MatCardModule,
+    MatDialogModule,
   ],
   providers: [
     {

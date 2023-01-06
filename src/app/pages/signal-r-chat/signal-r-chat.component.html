@@ -1,0 +1,38 @@
+<div class="input-style" >
+    <input type="text" placeholder="Your name" class="name-box" [(ngModel)]="messageModel.user" />
+</div>
+<mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title>CHAT BOX</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <ul>
+            <li *ngFor="let mObj of msgInboxArray">{{mObj.user}} :<br /><span class="msg-italic-style">{{mObj.message}}</span></li>
+          </ul>
+      </div>
+      <mat-form-field class="example-full-width">
+        <input matInput name="message" placeholder="Enter message here.." [(ngModel)]="messageModel.message" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="send()">SEND</button>
+    </mat-card-content>
+  </mat-card>
+  <div *ngIf="activeUsers.length>0">
+    <p>ActiveUsers</p>
+    <table mat-table [dataSource]="activeUsers" class="mat-elevation-z8">
+      <!-- Name Column -->
+      <ng-container matColumnDef="user">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef> Email </th>
+        <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+      *matRowDef="let user; columns: displayedColumns; let odd = odd;"
+      (click)="chat(user)">
+    </tr>
+    </table>
+  </div>
