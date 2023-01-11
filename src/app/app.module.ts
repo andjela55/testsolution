@@ -19,6 +19,7 @@ import { SignalRChatComponent } from './pages/signal-r-chat/signal-r-chat.compon
 import { AuthorizedComponent } from './pages/authorized/authorized.component';
 import { ChatDialogComponent } from './widgets/chat-dialog/chat-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +42,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     MatTableModule,
     MatCardModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     {

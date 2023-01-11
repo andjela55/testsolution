@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { takeUntil } from 'rxjs';
+import { Observable, of, takeUntil } from 'rxjs';
 import { LocalStorageService } from 'src/app/api/local-storage.service';
 import { LoginService } from 'src/app/api/login.service';
 import { UserService } from 'src/app/api/user.service';
@@ -43,5 +43,8 @@ export class LoginComponent extends BaseComponent {
       this.users = x;
       console.log(x);
     });
+  }
+  canLogout(): Observable<boolean> {
+    return of(true);
   }
 }

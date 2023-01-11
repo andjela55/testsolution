@@ -9,7 +9,6 @@ import {
 import { Observable, of } from 'rxjs';
 import { AppRoutes } from 'src/app/model/app-routes';
 import { AuthService } from '../auth.service';
-import { LocalStorageService } from '../local-storage.service';
 
 @Injectable({
   providedIn: 'root',

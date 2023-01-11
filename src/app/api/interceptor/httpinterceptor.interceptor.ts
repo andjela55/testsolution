@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 import {
   catchError,
+  finalize,
   map,
   mergeMap,
   Observable,
@@ -21,6 +22,7 @@ import { LocalStorageService } from '../local-storage.service';
 import { LoginService } from '../login.service';
 import { LoginResponse } from 'src/app/model/loginResponse';
 import { Router } from '@angular/router';
+import { SpinnerService } from '../helperServices/spinner.service';
 
 @Injectable()
 export class HttpinterceptorInterceptor implements HttpInterceptor {
@@ -28,13 +30,15 @@ export class HttpinterceptorInterceptor implements HttpInterceptor {
   constructor(
     private localStorageService: LocalStorageService,
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private spinnerService: SpinnerService
   ) {}
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
+    this.spinnerService.increaseCounter();
     var token = this.localStorageService.getToken();
     if (token) {
       request = this.getRequestWithHeaders(request, token);
@@ -73,9 +77,13 @@ export class HttpinterceptorInterceptor implements HttpInterceptor {
             return next.handle(request);
           })
         );
+      }),
+      finalize(() => {
+        this.spinnerService.decreaseCounter();
       })
     );
   }
+
   private getRequestWithHeaders(
     request: HttpRequest<unknown>,
     token: string

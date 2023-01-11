@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { forkJoin, map, Observable, takeUntil } from 'rxjs';
+import { forkJoin, map, Observable, of, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/api/auth.service';
 import { ChatService } from 'src/app/api/chat.service';
 import { LocalStorageService } from 'src/app/api/local-storage.service';
@@ -32,19 +32,6 @@ export class SignalRChatComponent extends BaseComponent {
     forkJoin([this.getCurrentUser(), this.getMessages(), this.getActiveUsers()])
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe();
-    // this.userService
-    //   .apiUserGetCurrentGet()
-    //   .pipe(takeUntil(this.ngUnsubscribe))
-    //   .subscribe((user) => {
-    //     let userData = this.setCurrentUserValues(user);
-    //     this.authService.setCurrentUser(userData);
-    //     this.setCurrentUserForChat();
-    //   });
-    // this.chatService
-    //   .retrieveMappedObject()
-    //   .subscribe((receivedObj: MessageModel) => {
-    //     this.addToInbox(receivedObj);
-    //   });
   }
   private setCurrentUserForChat() {
     this.currentUser = this.localStorage.getCurrentUser();
@@ -111,5 +98,8 @@ export class SignalRChatComponent extends BaseComponent {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('The dialog was closed');
     });
+  }
+  canLogout(): Observable<boolean> {
+    return of(true);
   }
 }

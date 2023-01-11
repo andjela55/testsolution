@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { takeUntil } from 'rxjs';
+import { Observable, of, takeUntil } from 'rxjs';
 import { AuthService } from 'src/app/api/auth.service';
 import { UserService } from 'src/app/api/user.service';
 import { BaseComponent } from 'src/app/pages/base/base.component';
@@ -16,7 +16,9 @@ export class MainComponent extends BaseComponent {
   ) {
     super();
   }
-
+  canLogout(): Observable<boolean> {
+    return of(true);
+  }
   public getData(): void {
     this.userService
       .apiUserGetAllGet()

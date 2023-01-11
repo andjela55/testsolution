@@ -1,4 +1,5 @@
-<div *ngIf="userAuthenticated" class="header">
+<div class="header">
     <button mat-raised-button color="primary" (click)="logout()">LOGOUT</button>
 </div>
-<router-outlet></router-outlet>
+<router-outlet (activate)="childActivated($event)"></router-outlet>
+<mat-spinner *ngIf="showSpinner"></mat-spinner>
