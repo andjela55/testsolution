@@ -1,4 +1,5 @@
 <div class="header">
+    <button mat-raised-button color="primary" [routerLink]="[routes.Users]">USERS</button>
     <button mat-raised-button color="primary" (click)="logout()">LOGOUT</button>
 </div>
 <router-outlet (activate)="childActivated($event)"></router-outlet>

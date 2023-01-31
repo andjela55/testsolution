@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from 'src/app/api/auth.service';
 import { CurrentRouteService } from 'src/app/api/current-route.service';
 import { AppRoutes } from 'src/app/model/app-routes';
@@ -13,6 +12,7 @@ import { SpinnerService } from 'src/app/api/helperServices/spinner.service';
 })
 export class AuthorizedComponent {
   public showSpinner: boolean = true;
+  routes = AppRoutes;
   constructor(
     private authService: AuthService,
     private currentRouteService: CurrentRouteService,

@@ -16,9 +16,7 @@ export class MainComponent extends BaseComponent {
   ) {
     super();
   }
-  canLogout(): Observable<boolean> {
-    return of(true);
-  }
+
   public getData(): void {
     this.userService
       .apiUserGetAllGet()

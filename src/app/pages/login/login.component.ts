@@ -44,7 +44,4 @@ export class LoginComponent extends BaseComponent {
       console.log(x);
     });
   }
-  canLogout(): Observable<boolean> {
-    return of(true);
-  }
 }

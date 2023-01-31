@@ -20,6 +20,9 @@ import { AuthorizedComponent } from './pages/authorized/authorized.component';
 import { ChatDialogComponent } from './widgets/chat-dialog/chat-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { UsersComponent } from './pages/users/users.component';
+import { UserComponent } from './pages/user/user.component';
+import { RouterModule } from '@angular/router';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +31,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     SignalRChatComponent,
     AuthorizedComponent,
     ChatDialogComponent,
+    UsersComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +48,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatCardModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    RouterModule,
   ],
   providers: [
     {

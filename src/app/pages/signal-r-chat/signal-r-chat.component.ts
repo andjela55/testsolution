@@ -99,7 +99,4 @@ export class SignalRChatComponent extends BaseComponent {
       console.log('The dialog was closed');
     });
   }
-  canLogout(): Observable<boolean> {
-    return of(true);
-  }
 }

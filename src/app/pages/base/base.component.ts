@@ -1,18 +1,19 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 
 @Component({
   template: '',
 })
-export abstract class BaseComponent implements OnInit, OnDestroy {
+export class BaseComponent implements OnDestroy {
   ngUnsubscribe: Subject<any> = new Subject<any>();
-  abstract canLogout(): Observable<boolean>;
-  constructor() {}
 
-  ngOnInit(): void {}
+  constructor() {}
 
   ngOnDestroy(): void {
     this.ngUnsubscribe.next('');
     this.ngUnsubscribe.complete();
+  }
+  canLogout(): Observable<boolean> {
+    return of(true);
   }
 }
